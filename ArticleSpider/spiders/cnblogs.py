@@ -5,7 +5,6 @@ import re
 
 import scrapy
 from scrapy import Request
-import requests
 
 from ArticleSpider.items import ArticlespiderItem
 from ArticleSpider.utils import common
