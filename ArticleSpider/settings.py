@@ -124,9 +124,9 @@ MYSQL_PASSWD = 'dyy@123'
 
 from datetime import datetime
 
-# TODAY = datetime.now().strftime("%Y%m%d")
-# LOG_ENABLED = 'True'
-# LOG_ENCODING = 'utf-8'
-# LOG_FILE = '\\'.join((BASE_DIR, 'ArticleSpider','log', TODAY))
-# LOG_LEVEL = 'DEBUG'
-# REDIRECT_ENABLED = False
+TODAY = datetime.now().strftime("%Y%m%d")
+LOG_ENABLED = 'True'
+LOG_ENCODING = 'utf-8'
+LOG_FILE = '\\'.join((BASE_DIR, 'ArticleSpider','log', TODAY))
+LOG_LEVEL = 'INFO'
+REDIRECT_ENABLED = False

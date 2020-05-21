@@ -10,14 +10,14 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 
 from items import LagouJobItemLoader, LagouJobItem
-from settings import BASE_DIR  # , LOG_FILE
+from settings import BASE_DIR, LOG_FILE
 from utils.common import get_md5
 
 
 class LagouSpider(CrawlSpider):
     name = 'lagou'
     allowed_domains = ['www.lagou.com']
-    # start_urls = ['https://www.lagou.com']
+    start_urls = ['https://www.lagou.com']
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0",
         "HOST": "www.lagou.com"
@@ -40,7 +40,7 @@ class LagouSpider(CrawlSpider):
     }
 
     # start_urls = ['https://www.lagou.com/jobs/list_/p-city_6']
-    start_urls = ['https://www.lagou.com/jobs/6981517.html?show=31517064ea2541b2b11f29661698f07d']
+    # start_urls = ['https://www.lagou.com/jobs/6981517.html?show=31517064ea2541b2b11f29661698f07d']
 
     rules = (
         # 全站爬取
@@ -83,23 +83,22 @@ class LagouSpider(CrawlSpider):
     #             'handle_httpstatus_list': [302]
     #         })
 
-
     def parse_job(self, response):
-        # logger = logging.getLogger()
-        # formatter = logging.Formatter('%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
-        #
-        # file_hadler = logging.FileHandler(filename=LOG_FILE, encoding='utf-8')
-        # file_hadler.setLevel(level=logging.DEBUG)
-        # file_hadler.setFormatter(formatter)
-        #
+        logger = logging.getLogger()
+        formatter = logging.Formatter('%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+
+        file_hadler = logging.FileHandler(filename=LOG_FILE, encoding='utf-8')
+        file_hadler.setLevel(level=logging.DEBUG)
+        file_hadler.setFormatter(formatter)
+
         # stream_handler = logging.StreamHandler()
         # stream_handler.setLevel(logging.DEBUG)
         # stream_handler.setFormatter(formatter)
-        #
-        # logger.addHandler(file_hadler)
+
+        logger.addHandler(file_hadler)
         # logger.addHandler(stream_handler)
-        #
-        # logger.info(response.url)
+
+        logger.info(response.url)
 
         itemloader = LagouJobItemLoader(item=LagouJobItem(), response=response)
 
