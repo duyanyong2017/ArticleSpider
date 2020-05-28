@@ -33,7 +33,6 @@ DOWNLOAD_DELAY = 1
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 
-
 # 当COOKIES_ENABLED是注释的时候scrapy默认没有开启cookie
 # 当COOKIES_ENABLED没有注释设置为False的时候scrapy默认使用了settings里面的cookie
 # 当COOKIES_ENABLED设置为True的时候scrapy就会把settings的cookie关掉，使用自定义cookie
@@ -42,7 +41,7 @@ DOWNLOAD_DELAY = 1
 # 总结：
 # 如果使用自定义cookie就把COOKIES_ENABLED设置为True
 # Disable cookies (enabled by default)
-COOKIES_ENABLED = True
+COOKIES_ENABLED = False # 设置为True 或者 注释掉都会被反爬，原因不详
 
 # Disable Telnet Console (enabled by default)
 # TELNETCONSOLE_ENABLED = False
@@ -62,6 +61,7 @@ COOKIES_ENABLED = True
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
+    # 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware':None,
     'ArticleSpider.middlewares.RandomUserAgentMiddleware': 543,
 }
 
@@ -79,7 +79,7 @@ ITEM_PIPELINES = {
     'ArticleSpider.pipelines.ImagesPipeline': 1,
     'ArticleSpider.pipelines.JsonWithEncodingPipeline': 2,
     # 'ArticleSpider.pipelines.MysqlPipeline': 2,
-    # 'ArticleSpider.pipelines.MysqlTwistedPipeline': 3,
+    'ArticleSpider.pipelines.MysqlTwistedPipeline': 3,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -122,11 +122,23 @@ MYSQL_DBNAME = 'imooc'
 MYSQL_USER = 'root'
 MYSQL_PASSWD = 'dyy@123'
 
-from datetime import datetime
+# from datetime import datetime
+#
+# TODAY = datetime.now().strftime("%Y%m%d")
+# LOG_ENABLED = 'True'
+# LOG_ENCODING = 'utf-8'
+# import platform
+#
+# LOG_FILE = '\\'.join((BASE_DIR, 'ArticleSpider', 'log', TODAY)) if platform.system() == 'Windows' else '//'.join(
+#     (BASE_DIR, 'ArticleSpider', 'log', TODAY))
+# LOG_LEVEL = 'DEBUG'
+# REDIRECT_ENABLED = False
 
-TODAY = datetime.now().strftime("%Y%m%d")
-LOG_ENABLED = 'True'
-LOG_ENCODING = 'utf-8'
-LOG_FILE = '\\'.join((BASE_DIR, 'ArticleSpider','log', TODAY))
-LOG_LEVEL = 'INFO'
-REDIRECT_ENABLED = False
+DEFAULT_REQUEST_HEADERS = {
+    'Accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+    'Accept-Language': "zh-CN,zh;q=0.9,en;q=0.8",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "referer": "https://www.lagou.com",
+    'Upgrade-Insecure-Requests': '1',
+    'Content-Type': 'application/json;charset=utf-8'}

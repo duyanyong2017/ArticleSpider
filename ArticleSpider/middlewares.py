@@ -109,8 +109,6 @@ class RandomUserAgentMiddleware(object):
     # 随机变更 user-agent
     def __init__(self, crawler):
         super(RandomUserAgentMiddleware, self).__init__()
-        location = os.path.dirname(os.path.abspath(os.path.dirname(__file__))) + r'\user_agent.json'
-        # self.ua = UserAgent(path=location, verify_ssl=False, cache=False, use_cache_server=False)
         self.ua = UserAgent()
         self.ua_type = crawler.settings.get('RANDOM_UA_TYPE', 'random')
 
@@ -122,4 +120,6 @@ class RandomUserAgentMiddleware(object):
         def get_ua():
             return getattr(self.ua, self.ua_type)
 
-        request.headers.setdefault('User-Agent', get_ua())
+        # request.headers.setdefault('User-Agent', get_ua())
+        request.headers['User-Agent'] = get_ua()
+        # print(get_ua())

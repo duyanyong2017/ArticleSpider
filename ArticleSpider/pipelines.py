@@ -6,7 +6,7 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 import codecs
 import json
-# import MySQLdb
+import MySQLdb
 
 from scrapy.pipelines.images import ImagesPipeline
 from twisted.enterprise import adbapi
@@ -20,6 +20,7 @@ class ArticlespiderPipeline(object):
 class JsonWithEncodingPipeline(object):
     # 自定义json文件的导出
     def __init__(self):
+        #  用codecs提供的open方法来指定打开的文件的语言编码，它会在读 取的时候自动转换为内部unicode
         self.file = codecs.open('article.json', 'a', encoding='utf-8')
 
     def process_item(self, item, spider):
@@ -60,56 +61,56 @@ class MysqlPipeline(object):
         return item
 
 
-# class MysqlTwistedPipeline(object):
-#     def __init__(self, dbpool):
-#         self.dbpool = dbpool
-#
-#     @classmethod
-#     def from_settings(cls, settings):
-#         from MySQLdb.cursors import DictCursor
-#         dbparams = dict(
-#             host=settings['MYSQL_HOST'],
-#             db=settings['MYSQL_DBNAME'],
-#             user=settings['MYSQL_USER'],
-#             passwd=settings['MYSQL_PASSWD'],
-#             charset='utf8',
-#             cursorclass=DictCursor,
-#             use_unicode=True,
-#         )
-#         dbpool = adbapi.ConnectionPool('MySQLdb', **dbparams)
-#         return cls(dbpool)
-#
-#     def process_item(self, item, spider):
-#         query = self.dbpool.runInteraction(self.do_inser, item)
-#         query.addErrback(self.handle_error, item, spider)
-#         return item
-#
-#     def handle_error(self, failure, item, spider):
-#         print(failure)
-#
-#     def do_inser(self, cursor, item):
-#         # insert_sql = """
-#         #             insert into cnblog_article(title,url,url_object_id,front_image_url,front_image_path,parise_num,comment_nums,fav_nums,tags,content,create_date)
-#         #             values
-#         #             (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update parise_num=values (parise_num)
-#         #         """
-#         # params = list()
-#         # params.append(item.get('title', ''))
-#         # params.append(item.get('url', ''))
-#         # params.append(item.get('url_object_id', ''))
-#         # front_image = ','.join(item.get('front_image_url', []))
-#         # params.append(front_image)
-#         # params.append(item.get('front_image_path', ''))
-#         # params.append(item.get('parise_num', 0))
-#         # params.append(item.get('comment_nums', 0))
-#         # params.append(item.get('fav_nums', 0))
-#         # params.append(item.get('tags', ''))
-#         # params.append(item.get('content', ''))
-#         # params.append(item.get('create_date', '1900-01-01'))
-#
-#         insert_sql, params = item.get_insert_sql()
-#
-#         cursor.execute(insert_sql, tuple(params))
+class MysqlTwistedPipeline(object):
+    def __init__(self, dbpool):
+        self.dbpool = dbpool
+
+    @classmethod
+    def from_settings(cls, settings):
+        from MySQLdb.cursors import DictCursor
+        dbparams = dict(
+            host=settings['MYSQL_HOST'],
+            db=settings['MYSQL_DBNAME'],
+            user=settings['MYSQL_USER'],
+            passwd=settings['MYSQL_PASSWD'],
+            charset='utf8',
+            cursorclass=DictCursor,
+            use_unicode=True,
+        )
+        dbpool = adbapi.ConnectionPool('MySQLdb', **dbparams)
+        return cls(dbpool)
+
+    def process_item(self, item, spider):
+        query = self.dbpool.runInteraction(self.do_inser, item)
+        query.addErrback(self.handle_error, item, spider)
+        return item
+
+    def handle_error(self, failure, item, spider):
+        print(failure)
+
+    def do_inser(self, cursor, item):
+        # insert_sql = """
+        #             insert into cnblog_article(title,url,url_object_id,front_image_url,front_image_path,parise_num,comment_nums,fav_nums,tags,content,create_date)
+        #             values
+        #             (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update parise_num=values (parise_num)
+        #         """
+        # params = list()
+        # params.append(item.get('title', ''))
+        # params.append(item.get('url', ''))
+        # params.append(item.get('url_object_id', ''))
+        # front_image = ','.join(item.get('front_image_url', []))
+        # params.append(front_image)
+        # params.append(item.get('front_image_path', ''))
+        # params.append(item.get('parise_num', 0))
+        # params.append(item.get('comment_nums', 0))
+        # params.append(item.get('fav_nums', 0))
+        # params.append(item.get('tags', ''))
+        # params.append(item.get('content', ''))
+        # params.append(item.get('create_date', '1900-01-01'))
+
+        insert_sql, params = item.get_insert_sql()
+
+        cursor.execute(insert_sql, tuple(params))
 
 
 class ArticleImagePipeline(ImagesPipeline):

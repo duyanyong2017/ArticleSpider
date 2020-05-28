@@ -7,6 +7,9 @@ import os
 # print(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 execute(["scrapy", "crawl", "lagou"])
+# execute(["scrapy", "crawl", "scrapy_spider"])
+
+# Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36
 # import sys
 #
 # BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
